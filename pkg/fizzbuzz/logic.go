@@ -11,16 +11,25 @@ Results holds the starting number and an array of lines for each number
 from the start up to the end number given to the Process function.
 */
 type Results struct {
-	Start int
-	Lines []string
+	Start, End int
+	Lines      chan string
+}
+
+/*
+Size returns the number of items in the result
+*/
+func (r *Results) Size() int {
+	return r.End - r.Start
 }
 
 /*
 Print writes the lines of the results to the writer
 */
 func (r *Results) Print(w io.Writer) {
-	for i := 0; i < len(r.Lines); i++ {
-		fmt.Fprintf(w, "%v: %v\n", i+r.Start, r.Lines[i])
+	i := 0
+	for line := range r.Lines {
+		fmt.Fprintf(w, "%v: %v\n", i+r.Start, line)
+		i++
 	}
 }
 
@@ -36,14 +45,20 @@ func Process(start int, end int) (*Results, error) {
 	if start > end {
 		return nil, errors.New("start cannot be greater than end")
 	}
-	count := end - start
-	num := start
-	rval := Results{start, make([]string, count)}
+	lines := make(chan string)
+	rval := Results{start, end, lines}
+	go generate(&rval)
+	return &rval, nil
+}
+
+func generate(results *Results) {
+	count := results.Size()
+	num := results.Start
 	for i := 0; i < count; i++ {
-		rval.Lines[i] = Eval(num)
+		results.Lines <- Eval(num)
 		num++
 	}
-	return &rval, nil
+	close(results.Lines)
 }
 
 /*

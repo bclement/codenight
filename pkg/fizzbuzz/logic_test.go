@@ -26,14 +26,15 @@ func TestTwenty(t *testing.T) {
 		t.Errorf("Results start at %v instead of %v", results.Start, start)
 		return
 	}
-	actual := results.Lines
-	if len(actual) != end {
-		t.Errorf("Results length %v instead of %v", len(actual), end)
+	if results.Size() != end {
+		t.Errorf("Results length %v instead of %v", results.Size(), end)
 		return
 	}
-	for i := start; i < end; i++ {
-		if expected[i] != actual[i] {
-			t.Errorf("Expected %v at index %v, got %v", expected[i], i, actual[i])
+	i := start
+	for actual := range results.Lines {
+		if expected[i] != actual {
+			t.Errorf("Expected %v at index %v, got %v", expected[i], i, actual)
 		}
+		i++
 	}
 }
