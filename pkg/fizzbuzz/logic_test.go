@@ -1,6 +1,7 @@
 package fizzbuzz
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -32,8 +33,12 @@ func TestTwenty(t *testing.T) {
 	}
 	i := start
 	for actual := range results.Lines {
-		if expected[i] != actual {
-			t.Errorf("Expected %v at index %v, got %v", expected[i], i, actual)
+		value := expected[i]
+		if value == "" {
+			value = fmt.Sprint(i)
+		}
+		if value != actual {
+			t.Errorf("Expected %v at index %v, got %v", value, i, actual)
 		}
 		i++
 	}

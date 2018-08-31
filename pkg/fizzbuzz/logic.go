@@ -26,10 +26,8 @@ func (r *Results) Size() int {
 Print writes the lines of the results to the writer
 */
 func (r *Results) Print(w io.Writer) {
-	i := 0
 	for line := range r.Lines {
-		fmt.Fprintf(w, "%v: %v\n", i+r.Start, line)
-		i++
+		fmt.Fprintf(w, "%v\n", line)
 	}
 }
 
@@ -72,6 +70,9 @@ func Eval(i int) string {
 	}
 	if i%5 == 0 {
 		rval += "Buzz"
+	}
+	if rval == "" {
+		rval = fmt.Sprint(i)
 	}
 	return rval
 }
