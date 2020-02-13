@@ -1,7 +1,7 @@
 package stack
 
 /*
-Stack is a basic nuber stack interface
+Stack is a basic number stack interface
 */
 type Stack interface {
 	Push(float64)
