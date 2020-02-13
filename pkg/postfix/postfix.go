@@ -10,7 +10,14 @@ import (
 /*
 Calculator performs postfix calculations
 */
-type Calculator struct {
+type Calculator interface {
+	SubmitNumber(float64)
+	SubmitOperator(string) error
+	Result() float64
+	Reset()
+}
+
+type stackCalc struct {
 	stack.Stack
 }
 
@@ -18,20 +25,20 @@ type Calculator struct {
 NewCalc creates a new calculator
 */
 func NewCalc() Calculator {
-	return Calculator{stack.NewStack()}
+	return stackCalc{stack.NewStack()}
 }
 
 /*
 SubmitNumber takes the next digit in the calculation
 */
-func (c Calculator) SubmitNumber(i float64) {
+func (c stackCalc) SubmitNumber(i float64) {
 	c.Push(i)
 }
 
 /*
 Result shows the current total
 */
-func (c Calculator) Result() float64 {
+func (c stackCalc) Result() float64 {
 	i, ok := c.Peek()
 	if !ok {
 		return 0
@@ -42,7 +49,7 @@ func (c Calculator) Result() float64 {
 /*
 Reset clears the calculator
 */
-func (c Calculator) Reset() {
+func (c stackCalc) Reset() {
 	c.Reset()
 }
 
@@ -51,7 +58,7 @@ SubmitOperator submits the next operator for the calculation
 returns an error if the operator is not recognized or
 calculator cannot handle operation in current state
 */
-func (c Calculator) SubmitOperator(o string) error {
+func (c stackCalc) SubmitOperator(o string) error {
 	if c.Size() < 2 {
 		return fmt.Errorf("Not enough values on stack for operator: %v", o)
 	}
