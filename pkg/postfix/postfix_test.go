@@ -56,7 +56,7 @@ func TestComplex(t *testing.T) {
 	assertTotal(t, c, 9)
 }
 
-func assertTotal(t *testing.T, c *Calculator, expected float64) {
+func assertTotal(t *testing.T, c Calculator, expected float64) {
 	actual := c.Result()
 	if actual != actual {
 		t.Fatalf("Expected %v, got %v", expected, actual)

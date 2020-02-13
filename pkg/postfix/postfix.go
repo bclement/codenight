@@ -11,28 +11,28 @@ import (
 Calculator performs postfix calculations
 */
 type Calculator struct {
-	s stack.Stack
+	stack.Stack
 }
 
 /*
 NewCalc creates a new calculator
 */
-func NewCalc() *Calculator {
-	return &Calculator{stack.NewStack()}
+func NewCalc() Calculator {
+	return Calculator{stack.NewStack()}
 }
 
 /*
 SubmitNumber takes the next digit in the calculation
 */
-func (c *Calculator) SubmitNumber(i float64) {
-	c.s.Push(i)
+func (c Calculator) SubmitNumber(i float64) {
+	c.Push(i)
 }
 
 /*
 Result shows the current total
 */
-func (c *Calculator) Result() float64 {
-	i, ok := c.s.Peek()
+func (c Calculator) Result() float64 {
+	i, ok := c.Peek()
 	if !ok {
 		return 0
 	}
@@ -42,8 +42,8 @@ func (c *Calculator) Result() float64 {
 /*
 Reset clears the calculator
 */
-func (c *Calculator) Reset() {
-	c.s.Reset()
+func (c Calculator) Reset() {
+	c.Reset()
 }
 
 /*
@@ -51,8 +51,8 @@ SubmitOperator submits the next operator for the calculation
 returns an error if the operator is not recognized or
 calculator cannot handle operation in current state
 */
-func (c *Calculator) SubmitOperator(o string) error {
-	if c.s.Size() < 2 {
+func (c Calculator) SubmitOperator(o string) error {
+	if c.Size() < 2 {
 		return fmt.Errorf("Not enough values on stack for operator: %v", o)
 	}
 	var f func(float64, float64) float64
@@ -70,10 +70,10 @@ func (c *Calculator) SubmitOperator(o string) error {
 	default:
 		return fmt.Errorf("Unknown operator: %v", o)
 	}
-	i, _ := c.s.Pop()
-	j, _ := c.s.Pop()
+	i, _ := c.Pop()
+	j, _ := c.Pop()
 	res := f(i, j)
-	c.s.Push(res)
+	c.Push(res)
 	return nil
 }
 
